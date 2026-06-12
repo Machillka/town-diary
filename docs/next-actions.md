@@ -8,17 +8,20 @@
 - Step 01：冻结 MVP 范围、术语和私人住处节点方案。
 - Step 02：冻结数据所有权、禁止访问、两阶段 tick 和运行模式。
 - Step 03：建立 Python 项目骨架、最小 CLI、测试入口和输出约定。
-- 建立 `dev/*.dev.md` 记录规则，并补齐 Step 00-03 开发记录。
+- Step 04：建立核心数据契约、schema version 和配置校验。
+- Step 05：建立确定性随机数、运行生成 ID 和 RunContext。
+- Step 06：实现五时间段 WorldClock 与快照恢复。
+- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-06 的改动、解释、分析和验证。
 
-当前代码只包含项目骨架和启动边界，尚未实现任何世界模拟逻辑。
+当前代码包含共享契约、确定性运行基础和独立 WorldClock；尚未实现天气、地点、WorldState、Environment、Agent 或写作逻辑。
 
 ## 首轮执行顺序
 
 下一轮按以下顺序执行，不要一次实现多个步骤：
 
-1. 执行 Step 04，冻结核心数据契约和配置校验。
-2. 执行 Step 05，建立统一 seed、ID 和运行上下文。
-3. Step 04-05 验收通过后再进入 WorldClock。
+1. 执行 Step 07，实现 WeatherSystem。
+2. 执行 Step 08，实现地点拓扑、开放规则和私人住处节点。
+3. 执行 Step 09，实现 WorldState、只读快照和状态不变量。
 
 ## 每个步骤的标准执行循环
 

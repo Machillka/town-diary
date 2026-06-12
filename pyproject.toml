@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "An independent town simulation observed by a novelist agent."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+  "PyYAML>=6.0",
+]
 
 [project.scripts]
 town-diary = "town_diary.main:main"
