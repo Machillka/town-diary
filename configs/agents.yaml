@@ -5,33 +5,162 @@ agents:
     role: novelist
     home_location_id: novelist_home
     initial_location_id: novelist_home
+    profile:
+      occupation: novelist
+      traits:
+        - observant
+        - reflective
+    habits:
+      - id: morning_writing
+        description: Writes quietly at home in the morning.
+        preferred_time_blocks:
+          - morning
+        target_location_id: novelist_home
+    goals:
+      - id: understand_town
+        description: Understand the ordinary rhythms of the town.
+        target_location_id: cafe
+    initial_subjective_state:
+      mood: curious
+      memories:
+        - Recently arrived in town to begin a new manuscript.
+      relationships: []
 
   - id: cafe_owner
     name: 森川遥
     role: resident
     home_location_id: cafe_owner_home
     initial_location_id: cafe
+    profile:
+      occupation: cafe_owner
+      traits:
+        - welcoming
+        - diligent
+    habits:
+      - id: open_cafe
+        description: Opens and tends the cafe every morning.
+        preferred_time_blocks:
+          - morning
+          - noon
+        target_location_id: cafe
+    goals:
+      - id: keep_cafe_welcoming
+        description: Keep the cafe welcoming for regular visitors.
+        target_location_id: cafe
+    initial_subjective_state:
+      mood: focused
+      memories: []
+      relationships:
+        - agent_id: station_elder
+          impression: familiar regular
 
   - id: librarian
     name: 椎名真白
     role: resident
     home_location_id: librarian_home
     initial_location_id: library
+    profile:
+      occupation: librarian
+      traits:
+        - quiet
+        - attentive
+    habits:
+      - id: organize_shelves
+        description: Organizes and checks the shelves each afternoon.
+        preferred_time_blocks:
+          - afternoon
+        target_location_id: library
+    goals:
+      - id: help_readers
+        description: Help town residents find useful books.
+        target_location_id: library
+    initial_subjective_state:
+      mood: calm
+      memories: []
+      relationships:
+        - agent_id: student
+          impression: frequent reader
 
   - id: vendor
     name: 宫田隆
     role: resident
     home_location_id: vendor_home
     initial_location_id: market
+    profile:
+      occupation: market_vendor
+      traits:
+        - practical
+        - sociable
+    habits:
+      - id: morning_stall
+        description: Sets up the market stall early in the day.
+        preferred_time_blocks:
+          - morning
+          - noon
+        target_location_id: market
+    goals:
+      - id: serve_market
+        description: Keep the market stall supplied.
+        target_location_id: market
+    initial_subjective_state:
+      mood: energetic
+      memories: []
+      relationships:
+        - agent_id: cafe_owner
+          impression: reliable customer
 
   - id: student
     name: 秋山优
     role: resident
     home_location_id: student_home
     initial_location_id: library
+    profile:
+      occupation: student
+      traits:
+        - curious
+        - reserved
+    habits:
+      - id: afternoon_study
+        description: Studies at the library after noon.
+        preferred_time_blocks:
+          - afternoon
+          - evening
+        target_location_id: library
+    goals:
+      - id: finish_studies
+        description: Make steady progress on current studies.
+        target_location_id: library
+    initial_subjective_state:
+      mood: thoughtful
+      memories: []
+      relationships:
+        - agent_id: librarian
+          impression: trusted helper
 
   - id: station_elder
     name: 古川源
     role: resident
     home_location_id: station_elder_home
     initial_location_id: station
+    profile:
+      occupation: retired_rail_worker
+      traits:
+        - patient
+        - nostalgic
+    habits:
+      - id: watch_trains
+        description: Spends the evening watching trains pass the old station.
+        preferred_time_blocks:
+          - evening
+        target_location_id: station
+    goals:
+      - id: preserve_station_memories
+        description: Keep the old station's memories alive.
+        target_location_id: station
+    initial_subjective_state:
+      mood: nostalgic
+      memories:
+        - Remembers when the old station was crowded.
+      relationships:
+        - agent_id: cafe_owner
+          impression: kind neighbor

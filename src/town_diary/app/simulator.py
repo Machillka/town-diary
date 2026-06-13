@@ -1,6 +1,9 @@
-"""Application-level simulator placeholder for the bootstrap step."""
+"""Application-level simulation entry point."""
 
 from dataclasses import dataclass
+
+from town_diary.core.config import load_config_bundle
+from town_diary.simulation.runtime import WorldRuntime
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,14 +19,10 @@ class SimulationRequest:
 
 
 class Simulator:
-    """Bootstrap simulator that reports configuration without simulating."""
+    """Run implemented simulation modes and report their result."""
 
     def run(self, request: SimulationRequest) -> int:
-        """Report the requested run.
-
-        World, agent, perception, and writing behavior intentionally belong to
-        later implementation steps.
-        """
+        """Run world mode or report later modes that are not implemented yet."""
         print("Simulation started.")
         print(f"days={request.days}")
         print(f"seed={request.seed}")
@@ -31,5 +30,24 @@ class Simulator:
         print(f"output={request.output_dir}")
         print(f"mode={request.mode}")
         print(f"llm={request.llm}")
+        if request.mode == "world":
+            runtime = WorldRuntime.create(
+                config=load_config_bundle(request.config_dir),
+                seed=request.seed,
+            )
+            summary = runtime.run_days(request.days)
+            for record in runtime.records:
+                if record.weather_changed:
+                    print(
+                        "weather_change="
+                        f"day:{record.day},time:{record.time_block.value},"
+                        f"from:{record.previous_weather.value},to:{record.weather.value}"
+                    )
+            print(
+                "world_summary="
+                f"ticks:{summary.ticks_completed},days:{summary.days_completed},"
+                f"weather_changes:{summary.weather_changes},"
+                f"end_reason:{summary.end_reason.value}"
+            )
         print("Simulation finished.")
         return 0

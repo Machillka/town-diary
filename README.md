@@ -2,7 +2,7 @@
 
 Town Diary Simulator 是一个“世界先独立运行，小说家只记录自身体验”的小镇生活模拟项目。
 
-当前实现状态：完成 Step 00-09，包含冻结契约、Python 项目骨架、核心数据契约、正式配置、确定性运行上下文、WorldClock、WeatherSystem、LocationSystem 和 WorldState。尚未实现 Environment 生命周期、Agent 行为、感知、事件或写作逻辑。
+当前实现状态：完成 Step 00-12，包含冻结契约、正式配置、确定性世界基础、World Runtime、组合 checkpoint、基础重放，以及六个 Agent 的静态资料和私有主观状态。尚未实现 Agent 候选行为、行为提交、感知、完整事件日志或写作逻辑。
 
 ## Requirements
 
@@ -33,7 +33,7 @@ uv run town-diary simulate `
   --llm mock
 ```
 
-当前 CLI 只验证参数和启动边界，不会创建输出目录或执行模拟。
+CLI 的 `world` 模式会执行独立客观环境模拟并输出天气变化与运行摘要。`observe` 和 `full` 仍只验证启动边界。
 
 ## Test
 
@@ -53,6 +53,7 @@ uv run pytest
 - [架构契约](docs/contracts/architecture-contract.md)
 - [核心数据契约](docs/contracts/data-contracts.md)
 - [世界基础系统契约](docs/contracts/world-foundation.md)
+- [Runtime 与 Agent 基础契约](docs/contracts/runtime-and-agents.md)
 - [逐步骤实施清单](docs/03-step-by-step-delivery-checklist.md)
 - [验收与来源追踪](docs/04-acceptance-and-traceability.md)
 

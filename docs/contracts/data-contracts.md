@@ -58,6 +58,7 @@ Agent 不能直接读取 `WorldSnapshot`。
 | `day`、`time_block` | 观察者可知的当前时间 |
 | `location_id` | 观察者可知的自身位置 |
 | `weather` | 当前可感知天气 |
+| `body_state` | 观察者可知的自身客观身体状态 |
 | `visible_agents` | 同地点或规则允许看见的 Agent |
 | `visible_events` | 可直接观察或参与的事件版本 |
 | `heard_rumors` | 通过传播行为获得的低确定性事件版本 |

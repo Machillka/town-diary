@@ -46,6 +46,10 @@ class WorldStateCheckpoint:
             "schema_version": self.schema_version,
         }
 
+    @classmethod
+    def from_dict(cls, checkpoint: object) -> "WorldStateCheckpoint":
+        return _checkpoint_from_dict(checkpoint)
+
 
 class WorldState:
     """Unique mutable source of objective world truth."""

@@ -56,6 +56,27 @@ def test_simulation_request_is_immutable() -> None:
         request.days = 2  # type: ignore[misc]
 
 
+def test_cli_world_mode_runs_environment(capsys) -> None:
+    exit_code = run_cli(
+        [
+            "simulate",
+            "--days",
+            "1",
+            "--seed",
+            "42",
+            "--config",
+            "configs",
+            "--mode",
+            "world",
+        ]
+    )
+
+    output = capsys.readouterr().out
+    assert exit_code == 0
+    assert "world_summary=ticks:5,days:1" in output
+    assert "end_reason:completed" in output
+
+
 def test_cli_rejects_non_positive_days() -> None:
     with pytest.raises(SystemExit) as error:
         run_cli(["simulate", "--days", "0"])

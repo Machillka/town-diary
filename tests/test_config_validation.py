@@ -64,6 +64,30 @@ def valid_documents() -> dict[str, dict]:
                     "role": "novelist",
                     "home_location_id": "novelist_home",
                     "initial_location_id": "novelist_home",
+                    "profile": {
+                        "occupation": "novelist",
+                        "traits": ["observant"],
+                    },
+                    "habits": [
+                        {
+                            "id": "morning_writing",
+                            "description": "Writes in the morning.",
+                            "preferred_time_blocks": ["morning"],
+                            "target_location_id": "novelist_home",
+                        }
+                    ],
+                    "goals": [
+                        {
+                            "id": "visit_cafe",
+                            "description": "Visit the cafe.",
+                            "target_location_id": "cafe",
+                        }
+                    ],
+                    "initial_subjective_state": {
+                        "mood": "curious",
+                        "memories": [],
+                        "relationships": [],
+                    },
                 }
             ],
         },
@@ -158,4 +182,22 @@ def test_invalid_location_open_block_is_rejected(valid_documents) -> None:
     documents["locations"]["locations"][1]["open_rule"]["open_blocks"] = ["midnight"]
 
     with pytest.raises(ConfigValidationError, match="open_blocks"):
+        validate(documents)
+
+
+def test_unknown_habit_location_is_rejected(valid_documents) -> None:
+    documents = deepcopy(valid_documents)
+    documents["agents"]["agents"][0]["habits"][0]["target_location_id"] = "missing"
+
+    with pytest.raises(ConfigValidationError, match="habit morning_writing"):
+        validate(documents)
+
+
+def test_unknown_relationship_agent_is_rejected(valid_documents) -> None:
+    documents = deepcopy(valid_documents)
+    documents["agents"]["agents"][0]["initial_subjective_state"]["relationships"] = [
+        {"agent_id": "missing_agent", "impression": "unknown"}
+    ]
+
+    with pytest.raises(ConfigValidationError, match="relationship references unknown agent"):
         validate(documents)

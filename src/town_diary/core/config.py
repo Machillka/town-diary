@@ -63,6 +63,44 @@ class AgentConfig:
     role: str
     home_location_id: LocationId
     initial_location_id: LocationId
+    profile: "AgentProfileConfig"
+    habits: tuple["HabitConfig", ...]
+    goals: tuple["GoalConfig", ...]
+    initial_subjective_state: "InitialSubjectiveStateConfig"
+
+
+@dataclass(frozen=True, slots=True)
+class AgentProfileConfig:
+    occupation: str
+    traits: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class HabitConfig:
+    id: str
+    description: str
+    preferred_time_blocks: tuple[TimeBlock, ...]
+    target_location_id: LocationId
+
+
+@dataclass(frozen=True, slots=True)
+class GoalConfig:
+    id: str
+    description: str
+    target_location_id: LocationId | None
+
+
+@dataclass(frozen=True, slots=True)
+class InitialRelationshipConfig:
+    agent_id: AgentId
+    impression: str
+
+
+@dataclass(frozen=True, slots=True)
+class InitialSubjectiveStateConfig:
+    mood: str
+    memories: tuple[str, ...]
+    relationships: tuple[InitialRelationshipConfig, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -262,6 +300,14 @@ def _parse_agents(
                         issues,
                     )
                 ),
+                profile=_parse_agent_profile(raw.get("profile"), f"{path}.profile", issues),
+                habits=_parse_habits(raw.get("habits"), f"{path}.habits", issues),
+                goals=_parse_goals(raw.get("goals"), f"{path}.goals", issues),
+                initial_subjective_state=_parse_initial_subjective_state(
+                    raw.get("initial_subjective_state"),
+                    f"{path}.initial_subjective_state",
+                    issues,
+                ),
             )
         )
     if novelist_count != 1:
@@ -298,6 +344,187 @@ def _validate_references(
             issues.append(
                 f"agent {agent.id} references unknown initial location {agent.initial_location_id}"
             )
+        for habit in agent.habits:
+            if str(habit.target_location_id) not in location_ids:
+                issues.append(
+                    f"agent {agent.id} habit {habit.id} references unknown location "
+                    f"{habit.target_location_id}"
+                )
+        for goal in agent.goals:
+            if (
+                goal.target_location_id is not None
+                and str(goal.target_location_id) not in location_ids
+            ):
+                issues.append(
+                    f"agent {agent.id} goal {goal.id} references unknown location "
+                    f"{goal.target_location_id}"
+                )
+    agent_ids = {agent.id for agent in agents}
+    for agent in agents:
+        for relationship in agent.initial_subjective_state.relationships:
+            if relationship.agent_id not in agent_ids:
+                issues.append(
+                    f"agent {agent.id} relationship references unknown agent "
+                    f"{relationship.agent_id}"
+                )
+            if relationship.agent_id == agent.id:
+                issues.append(f"agent {agent.id} cannot define a relationship to itself")
+
+
+def _parse_agent_profile(
+    value: object,
+    path: str,
+    issues: list[str],
+) -> AgentProfileConfig:
+    if not isinstance(value, Mapping):
+        issues.append(f"{path} must be a mapping")
+        return AgentProfileConfig(occupation="", traits=())
+    traits = _non_empty_string_list(value.get("traits"), f"{path}.traits", issues)
+    return AgentProfileConfig(
+        occupation=_required_string(value.get("occupation"), f"{path}.occupation", issues),
+        traits=tuple(traits),
+    )
+
+
+def _parse_habits(
+    value: object,
+    path: str,
+    issues: list[str],
+) -> tuple[HabitConfig, ...]:
+    if not _is_sequence(value):
+        issues.append(f"{path} must be a list")
+        return ()
+    habits: list[HabitConfig] = []
+    seen: set[str] = set()
+    for index, raw in enumerate(value):
+        item_path = f"{path}[{index}]"
+        if not isinstance(raw, Mapping):
+            issues.append(f"{item_path} must be a mapping")
+            continue
+        habit_id = _static_id(raw.get("id"), f"{item_path}.id", issues)
+        if habit_id in seen:
+            issues.append(f"duplicate habit id in {path}: {habit_id}")
+        seen.add(habit_id)
+        raw_blocks = raw.get("preferred_time_blocks")
+        blocks: list[TimeBlock] = []
+        if not _is_sequence(raw_blocks):
+            issues.append(f"{item_path}.preferred_time_blocks must be a list")
+        else:
+            for block_index, block in enumerate(raw_blocks):
+                parsed = _time_block(
+                    block,
+                    f"{item_path}.preferred_time_blocks[{block_index}]",
+                    issues,
+                )
+                if parsed is not None:
+                    blocks.append(parsed)
+        if not blocks:
+            issues.append(f"{item_path}.preferred_time_blocks must not be empty")
+        habits.append(
+            HabitConfig(
+                id=habit_id,
+                description=_required_string(
+                    raw.get("description"),
+                    f"{item_path}.description",
+                    issues,
+                ),
+                preferred_time_blocks=tuple(blocks),
+                target_location_id=LocationId(
+                    _static_id(
+                        raw.get("target_location_id"),
+                        f"{item_path}.target_location_id",
+                        issues,
+                    )
+                ),
+            )
+        )
+    if not habits:
+        issues.append(f"{path} must contain at least one habit")
+    return tuple(habits)
+
+
+def _parse_goals(
+    value: object,
+    path: str,
+    issues: list[str],
+) -> tuple[GoalConfig, ...]:
+    if not _is_sequence(value):
+        issues.append(f"{path} must be a list")
+        return ()
+    goals: list[GoalConfig] = []
+    seen: set[str] = set()
+    for index, raw in enumerate(value):
+        item_path = f"{path}[{index}]"
+        if not isinstance(raw, Mapping):
+            issues.append(f"{item_path} must be a mapping")
+            continue
+        goal_id = _static_id(raw.get("id"), f"{item_path}.id", issues)
+        if goal_id in seen:
+            issues.append(f"duplicate goal id in {path}: {goal_id}")
+        seen.add(goal_id)
+        raw_target = raw.get("target_location_id")
+        target = (
+            LocationId(
+                _static_id(raw_target, f"{item_path}.target_location_id", issues)
+            )
+            if raw_target is not None
+            else None
+        )
+        goals.append(
+            GoalConfig(
+                id=goal_id,
+                description=_required_string(
+                    raw.get("description"),
+                    f"{item_path}.description",
+                    issues,
+                ),
+                target_location_id=target,
+            )
+        )
+    if not goals:
+        issues.append(f"{path} must contain at least one goal")
+    return tuple(goals)
+
+
+def _parse_initial_subjective_state(
+    value: object,
+    path: str,
+    issues: list[str],
+) -> InitialSubjectiveStateConfig:
+    if not isinstance(value, Mapping):
+        issues.append(f"{path} must be a mapping")
+        return InitialSubjectiveStateConfig(mood="", memories=(), relationships=())
+    memories = _string_list(value.get("memories"), f"{path}.memories", issues)
+    raw_relationships = value.get("relationships")
+    relationships: list[InitialRelationshipConfig] = []
+    seen: set[str] = set()
+    if not _is_sequence(raw_relationships):
+        issues.append(f"{path}.relationships must be a list")
+    else:
+        for index, raw in enumerate(raw_relationships):
+            item_path = f"{path}.relationships[{index}]"
+            if not isinstance(raw, Mapping):
+                issues.append(f"{item_path} must be a mapping")
+                continue
+            agent_id = _static_id(raw.get("agent_id"), f"{item_path}.agent_id", issues)
+            if agent_id in seen:
+                issues.append(f"duplicate relationship agent in {path}: {agent_id}")
+            seen.add(agent_id)
+            relationships.append(
+                InitialRelationshipConfig(
+                    agent_id=AgentId(agent_id),
+                    impression=_required_string(
+                        raw.get("impression"),
+                        f"{item_path}.impression",
+                        issues,
+                    ),
+                )
+            )
+    return InitialSubjectiveStateConfig(
+        mood=_required_string(value.get("mood"), f"{path}.mood", issues),
+        memories=tuple(memories),
+        relationships=tuple(relationships),
+    )
 
 
 def _weather(value: object, path: str, issues: list[str]) -> Weather | None:
@@ -456,6 +683,25 @@ def _required_bool(value: object, path: str, issues: list[str]) -> bool:
         issues.append(f"{path} must be a boolean")
         return False
     return value
+
+
+def _string_list(value: object, path: str, issues: list[str]) -> list[str]:
+    if not _is_sequence(value):
+        issues.append(f"{path} must be a list")
+        return []
+    parsed: list[str] = []
+    for index, item in enumerate(value):
+        parsed.append(_required_string(item, f"{path}[{index}]", issues))
+    return parsed
+
+
+def _non_empty_string_list(value: object, path: str, issues: list[str]) -> list[str]:
+    parsed = _string_list(value, path, issues)
+    if not parsed:
+        issues.append(f"{path} must contain at least one value")
+    if len(set(parsed)) != len(parsed):
+        issues.append(f"{path} must not contain duplicates")
+    return parsed
 
 
 def _positive_number(value: object, path: str, issues: list[str]) -> float:

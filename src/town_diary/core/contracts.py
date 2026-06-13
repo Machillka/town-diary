@@ -133,6 +133,7 @@ class Observation:
     time_block: TimeBlock
     location_id: LocationId
     weather: Weather
+    body_state: tuple[NamedValue, ...] = ()
     visible_agents: tuple[AgentId, ...] = ()
     visible_events: tuple[ObservedEvent, ...] = ()
     heard_rumors: tuple[ObservedEvent, ...] = ()

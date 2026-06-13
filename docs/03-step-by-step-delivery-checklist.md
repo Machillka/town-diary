@@ -346,6 +346,8 @@
 
 ## Step 10：实现 World Runtime 生命周期与世界模式
 
+状态：Completed（见 `dev/10.world-runtime.dev.md`）
+
 ### 目标
 
 证明环境在没有小说家和写作系统时能够独立运行。
@@ -363,21 +365,23 @@
 
 ### 交付清单
 
-- [ ] 世界模式不创建小说家 Recorder 或 Writer。
-- [ ] 世界模式可以推进至少七天。
-- [ ] 世界模式输出环境状态变化与摘要。
-- [ ] World Runtime 生命周期明确。
-- [ ] 写作模块不是 Environment 的构造依赖。
+- [x] 世界模式不创建小说家 Recorder 或 Writer。
+- [x] 世界模式可以推进至少七天。
+- [x] 世界模式输出环境状态变化与摘要。
+- [x] World Runtime 生命周期明确。
+- [x] 写作模块不是 Environment 的构造依赖。
 
 ### 验证与退出门槛
 
-- [ ] 删除或禁用小说家后世界仍可运行。
-- [ ] 禁用 writing 后世界仍可运行。
-- [ ] 运行结束原因可追踪。
+- [x] 删除或禁用小说家后世界仍可运行。
+- [x] 禁用 writing 后世界仍可运行。
+- [x] 运行结束原因可追踪。
 
 ---
 
 ## Step 11：实现 checkpoint、恢复与基础重放
+
+状态：Completed（见 `dev/11.runtime-checkpoint-and-replay.dev.md`）
 
 ### 目标
 
@@ -396,19 +400,21 @@
 
 ### 交付清单
 
-- [ ] checkpoint 内容定义完整。
-- [ ] 恢复后下一个 tick 与未中断运行一致。
-- [ ] 重放时使用原始配置摘要和 seed。
-- [ ] 不把文本输出当作恢复世界状态的来源。
+- [x] checkpoint 内容定义完整。
+- [x] 恢复后下一个 tick 与未中断运行一致。
+- [x] 重放时使用原始配置摘要和 seed。
+- [x] 不把文本输出当作恢复世界状态的来源。
 
 ### 验证与退出门槛
 
-- [ ] 连续运行与中断恢复运行产生相同客观 WorldLog。
-- [ ] 缺失或版本不兼容的 checkpoint 会明确失败。
+- [x] 连续运行与中断恢复运行产生相同客观 WorldLog。
+- [x] 缺失或版本不兼容的 checkpoint 会明确失败。
 
 ---
 
 ## Step 12：实现 Agent 配置、静态资料与主观状态
+
+状态：Completed（见 `dev/12.agent-profile-and-subjective-state.dev.md`）
 
 ### 目标
 
@@ -428,17 +434,17 @@
 
 ### 交付清单
 
-- [ ] 六个 Agent 可被加载。
-- [ ] 小说家类型可区分但复用普通 Agent 行为路径。
-- [ ] 每个 Agent 的引用全部有效。
-- [ ] Agent 主观状态与 WorldState 分离。
-- [ ] Agent 不读取完整 WorldState。
+- [x] 六个 Agent 可被加载。
+- [x] 小说家类型可区分但复用普通 Agent 行为路径。
+- [x] 每个 Agent 的引用全部有效。
+- [x] Agent 主观状态与 WorldState 分离。
+- [x] Agent 不读取完整 WorldState。
 
 ### 验证与退出门槛
 
-- [ ] Agent 数量、类型和静态资料正确。
-- [ ] Agent 配置不能引入不存在地点。
-- [ ] Agent 实例无法直接改变世界位置。
+- [x] Agent 数量、类型和静态资料正确。
+- [x] Agent 配置不能引入不存在地点。
+- [x] Agent 实例无法直接改变世界位置。
 
 ---
 

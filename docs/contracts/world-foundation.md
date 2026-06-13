@@ -70,4 +70,4 @@ WorldStateCheckpoint 保存：
 - Agent 客观身体状态。
 - schema version。
 
-WorldState checkpoint 不保存随机数状态。完整恢复必须同时使用 RunContext manifest 中的随机数状态；Step 11 将负责组合两者。
+WorldState checkpoint 不保存随机数状态。完整恢复必须同时使用 RunContext manifest 中的随机数状态；组合规则见 `runtime-and-agents.md`。

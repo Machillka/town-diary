@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-06-12 已完成：
+2026-06-13 已完成：
 
 - Step 00：完成三份 DOCX 的统一项目分析和实施基线。
 - Step 01：冻结 MVP 范围、术语和私人住处节点方案。
@@ -14,17 +14,20 @@
 - Step 07：实现确定性 WeatherSystem、天气效果与状态日志。
 - Step 08：实现正式地点拓扑、开放规则与私人住处节点。
 - Step 09：实现 WorldState、深度不可变快照、状态不变量与 checkpoint。
-- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-09 的改动、解释、分析和验证。
+- Step 10：实现 World Runtime 生命周期与独立 world 模式。
+- Step 11：实现组合 checkpoint、恢复与基础重放。
+- Step 12：实现六个 Agent 的静态资料和私有主观状态。
+- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-12 的改动、解释、分析和验证。
 
-当前代码包含共享契约、确定性运行基础、WorldClock、WeatherSystem、LocationSystem 和 WorldState；尚未实现 Environment 生命周期、Agent 行为、感知、事件或写作逻辑。
+当前代码包含确定性世界基础、World Runtime、组合 checkpoint、基础重放和 Agent 主观状态；尚未实现候选行为、行为提交、感知、完整事件日志或写作逻辑。
 
 ## 首轮执行顺序
 
 下一轮按以下顺序执行，不要一次实现多个步骤：
 
-1. 执行 Step 10，实现 World Runtime 生命周期与 world 模式。
-2. 执行 Step 11，实现组合 checkpoint、恢复与基础重放。
-3. 执行 Step 12，实现 Agent 配置、静态资料与主观状态。
+1. 执行 Step 13，实现最小需求、习惯触发和候选行为生成。
+2. 执行 Step 14，实现 ActionValidator 与 ActionExecutor。
+3. 执行 Step 15，实现结构化 WorldEvent 与 WorldLog。
 
 ## 每个步骤的标准执行循环
 
