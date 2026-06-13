@@ -2,7 +2,7 @@
 
 Town Diary Simulator 是一个“世界先独立运行，小说家只记录自身体验”的小镇生活模拟项目。
 
-当前实现状态：完成 Step 00-06，包含冻结契约、Python 项目骨架、核心数据契约、配置校验、确定性运行上下文和 WorldClock。尚未实现天气、地点、Environment、Agent、感知或写作逻辑。
+当前实现状态：完成 Step 00-09，包含冻结契约、Python 项目骨架、核心数据契约、正式配置、确定性运行上下文、WorldClock、WeatherSystem、LocationSystem 和 WorldState。尚未实现 Environment 生命周期、Agent 行为、感知、事件或写作逻辑。
 
 ## Requirements
 
@@ -52,6 +52,7 @@ uv run pytest
 - [MVP 范围与术语契约](docs/contracts/mvp-scope.md)
 - [架构契约](docs/contracts/architecture-contract.md)
 - [核心数据契约](docs/contracts/data-contracts.md)
+- [世界基础系统契约](docs/contracts/world-foundation.md)
 - [逐步骤实施清单](docs/03-step-by-step-delivery-checklist.md)
 - [验收与来源追踪](docs/04-acceptance-and-traceability.md)
 

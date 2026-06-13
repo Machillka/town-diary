@@ -15,6 +15,20 @@ def valid_documents() -> dict[str, dict]:
             "schema_version": SCHEMA_VERSION,
             "initial_weather": "clear",
             "allowed_weather": ["clear", "cloudy", "light_rain", "heavy_rain"],
+            "weather_transition_time": "morning",
+            "weather_transitions": [
+                {"from": weather, "to": weather, "weight": 1}
+                for weather in ("clear", "cloudy", "light_rain", "heavy_rain")
+            ],
+            "weather_effects": {
+                weather: {
+                    "movement_multiplier": 1,
+                    "foot_traffic_multiplier": 1,
+                    "observation_multiplier": 1,
+                    "rumor_multiplier": 1,
+                }
+                for weather in ("clear", "cloudy", "light_rain", "heavy_rain")
+            },
         },
         "locations": {
             "schema_version": SCHEMA_VERSION,
@@ -24,14 +38,20 @@ def valid_documents() -> dict[str, dict]:
                     "name": "Novelist Home",
                     "kind": "home",
                     "is_public": False,
+                    "is_core_narrative": True,
                     "connected_locations": ["cafe"],
+                    "open_rule": "always",
                 },
                 {
                     "id": "cafe",
                     "name": "Cafe",
                     "kind": "social",
                     "is_public": True,
+                    "is_core_narrative": True,
                     "connected_locations": ["novelist_home"],
+                    "open_rule": {
+                        "open_blocks": ["morning", "noon", "afternoon", "evening"]
+                    },
                 },
             ],
         },
@@ -122,4 +142,20 @@ def test_schema_version_mismatch_is_rejected(valid_documents) -> None:
     documents["agents"]["schema_version"] = "0.2"
 
     with pytest.raises(ConfigValidationError, match="same schema_version"):
+        validate(documents)
+
+
+def test_missing_weather_effect_is_rejected(valid_documents) -> None:
+    documents = deepcopy(valid_documents)
+    del documents["world"]["weather_effects"]["heavy_rain"]
+
+    with pytest.raises(ConfigValidationError, match="weather effects missing states"):
+        validate(documents)
+
+
+def test_invalid_location_open_block_is_rejected(valid_documents) -> None:
+    documents = deepcopy(valid_documents)
+    documents["locations"]["locations"][1]["open_rule"]["open_blocks"] = ["midnight"]
+
+    with pytest.raises(ConfigValidationError, match="open_blocks"):
         validate(documents)

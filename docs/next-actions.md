@@ -11,17 +11,20 @@
 - Step 04：建立核心数据契约、schema version 和配置校验。
 - Step 05：建立确定性随机数、运行生成 ID 和 RunContext。
 - Step 06：实现五时间段 WorldClock 与快照恢复。
-- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-06 的改动、解释、分析和验证。
+- Step 07：实现确定性 WeatherSystem、天气效果与状态日志。
+- Step 08：实现正式地点拓扑、开放规则与私人住处节点。
+- Step 09：实现 WorldState、深度不可变快照、状态不变量与 checkpoint。
+- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-09 的改动、解释、分析和验证。
 
-当前代码包含共享契约、确定性运行基础和独立 WorldClock；尚未实现天气、地点、WorldState、Environment、Agent 或写作逻辑。
+当前代码包含共享契约、确定性运行基础、WorldClock、WeatherSystem、LocationSystem 和 WorldState；尚未实现 Environment 生命周期、Agent 行为、感知、事件或写作逻辑。
 
 ## 首轮执行顺序
 
 下一轮按以下顺序执行，不要一次实现多个步骤：
 
-1. 执行 Step 07，实现 WeatherSystem。
-2. 执行 Step 08，实现地点拓扑、开放规则和私人住处节点。
-3. 执行 Step 09，实现 WorldState、只读快照和状态不变量。
+1. 执行 Step 10，实现 World Runtime 生命周期与 world 模式。
+2. 执行 Step 11，实现组合 checkpoint、恢复与基础重放。
+3. 执行 Step 12，实现 Agent 配置、静态资料与主观状态。
 
 ## 每个步骤的标准执行循环
 

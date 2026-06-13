@@ -1,0 +1,117 @@
+schema_version: "0.1"
+locations:
+  - id: novelist_home
+    name: 小说家的家
+    kind: home
+    is_public: false
+    is_core_narrative: true
+    connected_locations:
+      - cafe
+      - library
+    open_rule: always
+
+  - id: cafe
+    name: 白钟咖啡馆
+    kind: social
+    is_public: true
+    is_core_narrative: true
+    connected_locations:
+      - novelist_home
+      - cafe_owner_home
+      - library
+      - market
+      - station
+    open_rule:
+      open_blocks:
+        - morning
+        - noon
+        - afternoon
+        - evening
+
+  - id: library
+    name: 小镇图书馆
+    kind: quiet
+    is_public: true
+    is_core_narrative: true
+    connected_locations:
+      - novelist_home
+      - cafe
+      - librarian_home
+      - student_home
+    open_rule:
+      open_blocks:
+        - morning
+        - noon
+        - afternoon
+        - evening
+
+  - id: market
+    name: 中央市场
+    kind: commerce
+    is_public: true
+    is_core_narrative: true
+    connected_locations:
+      - cafe
+      - station
+      - vendor_home
+    open_rule:
+      open_blocks:
+        - morning
+        - noon
+        - afternoon
+
+  - id: station
+    name: 旧车站
+    kind: boundary
+    is_public: true
+    is_core_narrative: true
+    connected_locations:
+      - cafe
+      - market
+      - station_elder_home
+    open_rule: always
+
+  - id: cafe_owner_home
+    name: 森川遥的家
+    kind: home
+    is_public: false
+    is_core_narrative: false
+    connected_locations:
+      - cafe
+    open_rule: always
+
+  - id: librarian_home
+    name: 椎名真白的家
+    kind: home
+    is_public: false
+    is_core_narrative: false
+    connected_locations:
+      - library
+    open_rule: always
+
+  - id: vendor_home
+    name: 宫田隆的家
+    kind: home
+    is_public: false
+    is_core_narrative: false
+    connected_locations:
+      - market
+    open_rule: always
+
+  - id: student_home
+    name: 秋山优的家
+    kind: home
+    is_public: false
+    is_core_narrative: false
+    connected_locations:
+      - library
+    open_rule: always
+
+  - id: station_elder_home
+    name: 古川源的家
+    kind: home
+    is_public: false
+    is_core_narrative: false
+    connected_locations:
+      - station
+    open_rule: always

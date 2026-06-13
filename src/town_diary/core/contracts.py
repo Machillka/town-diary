@@ -62,15 +62,34 @@ class EventFact:
 
 
 @dataclass(frozen=True, slots=True)
+class LocationStateSnapshot:
+    """Read-only objective state for one location."""
+
+    location_id: LocationId
+    is_open: bool
+    is_public: bool
+    is_core_narrative: bool
+
+
+@dataclass(frozen=True, slots=True)
+class AgentStateSnapshot:
+    """Read-only objective state for one agent."""
+
+    agent_id: AgentId
+    location_id: LocationId
+    body_state: tuple[NamedValue, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
 class WorldSnapshot:
-    """Read-only objective world projection for Environment and Perception."""
+    """Deeply immutable objective world projection."""
 
     day: int
     time_block: TimeBlock
     weather: Weather
-    location_states: tuple[NamedValue, ...] = ()
-    agent_locations: tuple[NamedValue, ...] = ()
-    agent_states: tuple[NamedValue, ...] = ()
+    tick: int
+    location_states: tuple[LocationStateSnapshot, ...] = ()
+    agent_states: tuple[AgentStateSnapshot, ...] = ()
     schema_version: str = SCHEMA_VERSION
 
 

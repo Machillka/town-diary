@@ -1,0 +1,72 @@
+schema_version: "0.1"
+initial_weather: clear
+allowed_weather:
+  - clear
+  - cloudy
+  - light_rain
+  - heavy_rain
+weather_transition_time: morning
+weather_transitions:
+  - from: clear
+    to: clear
+    weight: 5
+  - from: clear
+    to: cloudy
+    weight: 3
+  - from: clear
+    to: light_rain
+    weight: 1
+  - from: cloudy
+    to: clear
+    weight: 3
+  - from: cloudy
+    to: cloudy
+    weight: 4
+  - from: cloudy
+    to: light_rain
+    weight: 2
+  - from: cloudy
+    to: heavy_rain
+    weight: 1
+  - from: light_rain
+    to: clear
+    weight: 2
+  - from: light_rain
+    to: cloudy
+    weight: 3
+  - from: light_rain
+    to: light_rain
+    weight: 3
+  - from: light_rain
+    to: heavy_rain
+    weight: 1
+  - from: heavy_rain
+    to: cloudy
+    weight: 4
+  - from: heavy_rain
+    to: light_rain
+    weight: 3
+  - from: heavy_rain
+    to: heavy_rain
+    weight: 1
+weather_effects:
+  clear:
+    movement_multiplier: 1.0
+    foot_traffic_multiplier: 1.0
+    observation_multiplier: 1.0
+    rumor_multiplier: 1.0
+  cloudy:
+    movement_multiplier: 0.95
+    foot_traffic_multiplier: 0.95
+    observation_multiplier: 1.0
+    rumor_multiplier: 1.0
+  light_rain:
+    movement_multiplier: 0.75
+    foot_traffic_multiplier: 0.75
+    observation_multiplier: 0.9
+    rumor_multiplier: 0.9
+  heavy_rain:
+    movement_multiplier: 0.4
+    foot_traffic_multiplier: 0.45
+    observation_multiplier: 0.7
+    rumor_multiplier: 0.6

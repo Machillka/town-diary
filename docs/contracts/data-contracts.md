@@ -41,9 +41,9 @@ Run ID 使用 `run_` 前缀，默认由 seed 和配置摘要生成。
 | `day` | 当前世界日 |
 | `time_block` | 当前统一时间段 |
 | `weather` | 当前客观天气 |
-| `location_states` | 地点状态的结构化只读字段 |
-| `agent_locations` | Agent 客观位置投影 |
-| `agent_states` | Agent 客观身体状态投影 |
+| `tick` | 当前已提交 tick 序号 |
+| `location_states` | 地点开放、公共访问和核心叙事标记的只读投影 |
+| `agent_states` | Agent 客观位置与身体状态的只读投影 |
 | `schema_version` | 快照 schema 版本 |
 
 Agent 不能直接读取 `WorldSnapshot`。
