@@ -10,6 +10,7 @@ from town_diary.core.contracts import TimeBlock, Weather
 from town_diary.core.errors import SnapshotValidationError
 from town_diary.core.run_context import RunContext, config_digest
 from town_diary.core.schema import SCHEMA_VERSION, SUPPORTED_SCHEMA_VERSIONS
+from town_diary.events import WorldLog
 from town_diary.simulation.runtime import (
     RuntimeEndReason,
     RuntimeStatus,
@@ -28,6 +29,7 @@ class RuntimeCheckpoint:
     records: tuple[WorldTickRecord, ...]
     saved_status: RuntimeStatus
     end_reason: RuntimeEndReason | None
+    world_events: tuple[object, ...] = ()
     schema_version: str = SCHEMA_VERSION
 
     def to_dict(self) -> dict[str, object]:
@@ -37,6 +39,7 @@ class RuntimeCheckpoint:
             "records": [record.to_dict() for record in self.records],
             "saved_status": self.saved_status.value,
             "end_reason": self.end_reason.value if self.end_reason else None,
+            "world_events": list(self.world_events),
             "schema_version": self.schema_version,
         }
 
@@ -50,6 +53,7 @@ class RuntimeCheckpoint:
             "records",
             "saved_status",
             "end_reason",
+            "world_events",
             "schema_version",
         }
         missing = sorted(required.difference(value))
@@ -65,6 +69,8 @@ class RuntimeCheckpoint:
             raise SnapshotValidationError("runtime checkpoint run_context must be a mapping")
         if not isinstance(value["records"], list):
             raise SnapshotValidationError("runtime checkpoint records must be a list")
+        if not isinstance(value["world_events"], list):
+            raise SnapshotValidationError("runtime checkpoint world_events must be a list")
         try:
             saved_status = RuntimeStatus(value["saved_status"])
             end_reason = (
@@ -86,6 +92,7 @@ class RuntimeCheckpoint:
             records=tuple(_tick_record(record) for record in value["records"]),
             saved_status=saved_status,
             end_reason=end_reason,
+            world_events=tuple(value["world_events"]),
             schema_version=str(value["schema_version"]),
         )
 
@@ -98,6 +105,7 @@ def create_runtime_checkpoint(runtime: WorldRuntime) -> RuntimeCheckpoint:
         records=runtime.records,
         saved_status=runtime.status,
         end_reason=runtime.end_reason,
+        world_events=tuple(runtime.world_log.to_dicts()),
     )
 
 
@@ -131,6 +139,7 @@ def restore_world_runtime(
         status=restored_status,
         end_reason=parsed.end_reason,
         records=parsed.records,
+        world_log=WorldLog.from_dicts(list(parsed.world_events)),
     )
 
 

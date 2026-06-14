@@ -63,6 +63,7 @@ Agent 不能直接读取 `WorldSnapshot`。
 | `visible_events` | 可直接观察或参与的事件版本 |
 | `heard_rumors` | 通过传播行为获得的低确定性事件版本 |
 | `available_actions` | Environment 当前允许提议的行为类型 |
+| `available_location_ids` | Environment 当前允许考虑的有限移动目标 |
 
 ## `ActionProposal`
 
@@ -88,8 +89,9 @@ Environment 校验与提交 ActionProposal 后的结果。
 | `success` | 行为是否被提交 |
 | `reason` | 接受或拒绝原因 |
 | `events` | 成功提交后产生的客观事件 |
+| `effects` | 本次提交产生的结构化客观状态效果 |
 
-失败结果不得改变 WorldState，也不得产生伪装为成功的 WorldEvent。
+失败结果不得改变 WorldState，也不得产生伪装为成功的 WorldEvent。成功结果至少包含一个可追踪的 WorldEvent。
 
 ## `WorldEvent`
 
@@ -98,6 +100,7 @@ Environment 校验与提交 ActionProposal 后的结果。
 | 字段 | 含义 |
 | --- | --- |
 | `event_id` | 客观事件 ID |
+| `run_id` | 所属确定性运行 |
 | `day`、`time_block` | 发生时间 |
 | `location_id` | 发生地点 |
 | `event_type` | 可供规则判断的事件类型 |

@@ -8,6 +8,7 @@ from town_diary.core.contracts import TimeBlock, Weather, WorldSnapshot
 from town_diary.core.errors import TownDiaryError
 from town_diary.core.run_context import RunContext
 from town_diary.core.schema import SCHEMA_VERSION
+from town_diary.events import EventFactory, WorldLog
 from town_diary.simulation.clock import TIME_BLOCKS
 from town_diary.simulation.world_state import WorldState
 
@@ -65,6 +66,7 @@ class WorldRunSummary:
     current_time_block: TimeBlock
     current_weather: Weather
     weather_changes: int
+    world_events: int
     schema_version: str = SCHEMA_VERSION
 
 
@@ -80,6 +82,7 @@ class WorldRuntime:
         status: RuntimeStatus = RuntimeStatus.CREATED,
         end_reason: RuntimeEndReason | None = None,
         records: tuple[WorldTickRecord, ...] = (),
+        world_log: WorldLog | None = None,
     ) -> None:
         self._config = config
         self._context = context
@@ -87,6 +90,12 @@ class WorldRuntime:
         self._status = RuntimeStatus(status)
         self._end_reason = end_reason
         self._records = list(records)
+        self._world_log = world_log or WorldLog()
+        self._events = EventFactory(
+            run_id=str(context.run_id),
+            ids=context.ids,
+            world_log=self._world_log,
+        )
         self._validate_runtime_state()
 
     @classmethod
@@ -123,6 +132,10 @@ class WorldRuntime:
     def records(self) -> tuple[WorldTickRecord, ...]:
         return tuple(self._records)
 
+    @property
+    def world_log(self) -> WorldLog:
+        return self._world_log
+
     def start(self) -> None:
         if self._status is not RuntimeStatus.CREATED:
             raise RuntimeLifecycleError("only a created runtime can start")
@@ -152,6 +165,11 @@ class WorldRuntime:
         time_block = self._world_state.clock.time_block
         previous_weather = self._world_state.weather.current
         change = self._world_state.weather.advance(day=day, time_block=time_block)
+        if change is not None and change.previous != change.current:
+            self._events.weather_event(
+                change=change,
+                location_id=self._config.locations[0].id,
+            )
         self._world_state.increment_tick()
         record = WorldTickRecord(
             tick=self._world_state.tick,
@@ -184,6 +202,14 @@ class WorldRuntime:
             raise ValueError("days must be a positive integer")
         return self.run_ticks(days * len(TIME_BLOCKS), end_when_complete=True)
 
+    def record_committed_tick(self, record: WorldTickRecord) -> None:
+        """Attach a tick committed by another Environment driver."""
+        if self._status is not RuntimeStatus.RUNNING:
+            raise RuntimeLifecycleError("runtime must be running to record a tick")
+        if record.tick != self._world_state.tick or record.tick != len(self._records) + 1:
+            raise RuntimeLifecycleError("committed tick record does not match runtime state")
+        self._records.append(record)
+
     def snapshot(self) -> WorldSnapshot:
         return self._world_state.snapshot()
 
@@ -198,6 +224,7 @@ class WorldRuntime:
             current_time_block=self._world_state.clock.time_block,
             current_weather=self._world_state.weather.current,
             weather_changes=sum(record.weather_changed for record in self._records),
+            world_events=len(self._world_log.events),
         )
 
     def _validate_runtime_state(self) -> None:

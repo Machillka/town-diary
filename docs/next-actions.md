@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-06-13 已完成：
+2026-06-14 已完成：
 
 - Step 00：完成三份 DOCX 的统一项目分析和实施基线。
 - Step 01：冻结 MVP 范围、术语和私人住处节点方案。
@@ -17,17 +17,22 @@
 - Step 10：实现 World Runtime 生命周期与独立 world 模式。
 - Step 11：实现组合 checkpoint、恢复与基础重放。
 - Step 12：实现六个 Agent 的静态资料和私有主观状态。
-- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-12 的改动、解释、分析和验证。
+- Step 13：实现最小需求、习惯触发和可解释候选行为生成。
+- Step 14：实现 ActionProposal、ActionValidator 与 ActionExecutor。
+- Step 15：实现结构化 WorldEvent、追加式 WorldLog 与 JSONL 持久化。
+- Step 16：实现统一快照、两阶段 tick、冲突解决和事务回滚。
+- Step 17：实现居民规则决策、审计理由、fallback 与七天行为闭环。
+- 建立 `dev/*.dev.md` 记录规则，并持续记录 Step 00-17 的改动、解释、分析和验证。
 
-当前代码包含确定性世界基础、World Runtime、组合 checkpoint、基础重放和 Agent 主观状态；尚未实现候选行为、行为提交、感知、完整事件日志或写作逻辑。
+当前代码包含确定性世界基础、World Runtime、组合 checkpoint、Agent 主观状态、结构化 WorldLog、两阶段 tick 和七天规则行为；尚未实现完整感知、传闻、小说家记录或写作逻辑。
 
 ## 首轮执行顺序
 
 下一轮按以下顺序执行，不要一次实现多个步骤：
 
-1. 执行 Step 13，实现最小需求、习惯触发和候选行为生成。
-2. 执行 Step 14，实现 ActionValidator 与 ActionExecutor。
-3. 执行 Step 15，实现结构化 WorldEvent 与 WorldLog。
+1. 执行 Step 18，实现最小交谈、关系认知与传闻来源。
+2. 执行 Step 19，实现 Observation 与 ObservedEvent。
+3. 执行 Step 20，实现公共、参与者与隐藏事实过滤。
 
 ## 每个步骤的标准执行循环
 

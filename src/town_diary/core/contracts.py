@@ -106,6 +106,7 @@ class WorldEvent:
     summary: str
     facts: tuple[EventFact, ...]
     source_action_id: ActionId | None = None
+    run_id: str = ""
     schema_version: str = SCHEMA_VERSION
 
 
@@ -138,6 +139,7 @@ class Observation:
     visible_events: tuple[ObservedEvent, ...] = ()
     heard_rumors: tuple[ObservedEvent, ...] = ()
     available_actions: tuple[str, ...] = ()
+    available_location_ids: tuple[LocationId, ...] = ()
     schema_version: str = SCHEMA_VERSION
 
 
@@ -163,6 +165,7 @@ class ActionResult:
     success: bool
     reason: str
     events: tuple[WorldEvent, ...] = ()
+    effects: tuple[NamedValue, ...] = ()
     schema_version: str = SCHEMA_VERSION
 
 

@@ -1,10 +1,15 @@
 """Agent static identity and private subjective state."""
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from town_diary.core.config import AgentConfig
-from town_diary.core.contracts import NamedValue, Observation, TimeBlock
-from town_diary.core.ids import AgentId, LocationId
+from town_diary.core.contracts import ActionProposal, NamedValue, Observation, TimeBlock
+from town_diary.core.ids import ActionId, AgentId, LocationId
+from town_diary.core.random import DeterministicRandom
+
+if TYPE_CHECKING:
+    from town_diary.agents.candidates import CandidateAction
 
 
 @dataclass(frozen=True, slots=True)
@@ -164,6 +169,35 @@ class Agent:
     def objective_body_state(self, observation: Observation) -> tuple[NamedValue, ...]:
         self._validate_observation(observation)
         return observation.body_state
+
+    def generate_candidates(
+        self,
+        observation: Observation,
+        random: DeterministicRandom,
+    ) -> tuple["CandidateAction", ...]:
+        from town_diary.agents.candidates import CandidateGenerator
+
+        return CandidateGenerator().generate(
+            agent=self,
+            observation=observation,
+            random=random,
+        )
+
+    def propose(
+        self,
+        candidate: "CandidateAction",
+        *,
+        action_id: ActionId,
+    ) -> ActionProposal:
+        """Convert a subjective option into intent without executing it."""
+        return ActionProposal(
+            action_id=action_id,
+            agent_id=self.id,
+            action_type=candidate.action_type,
+            reason=candidate.reason,
+            target_location_id=candidate.target_location_id,
+            target_agent_id=candidate.target_agent_id,
+        )
 
     def _validate_observation(self, observation: Observation) -> None:
         if observation.observer_id != self.id:

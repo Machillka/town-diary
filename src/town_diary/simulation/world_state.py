@@ -242,6 +242,26 @@ class WorldState:
         for agent_id, state in self._agent_body_states.items():
             _validate_body_state(agent_id, state)
 
+    def restore_checkpoint(
+        self,
+        *,
+        checkpoint: WorldStateCheckpoint | object,
+        config: ConfigBundle,
+        random: DeterministicRandom,
+    ) -> None:
+        """Restore objective state in place after a failed Environment transaction."""
+        restored = self.from_checkpoint(
+            checkpoint=checkpoint,
+            config=config,
+            random=random,
+        )
+        self._clock = restored._clock
+        self._weather = restored._weather
+        self._locations = restored._locations
+        self._agent_locations = restored._agent_locations
+        self._agent_body_states = restored._agent_body_states
+        self._tick = restored._tick
+
 
 def _named_values(values: Mapping[str, Any]) -> tuple[NamedValue, ...]:
     return tuple(

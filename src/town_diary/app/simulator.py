@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 from town_diary.core.config import load_config_bundle
-from town_diary.simulation.runtime import WorldRuntime
+from town_diary.simulation.town import RuleBasedTownSimulation
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,12 +31,12 @@ class Simulator:
         print(f"mode={request.mode}")
         print(f"llm={request.llm}")
         if request.mode == "world":
-            runtime = WorldRuntime.create(
+            simulation = RuleBasedTownSimulation.create_world_mode(
                 config=load_config_bundle(request.config_dir),
                 seed=request.seed,
             )
-            summary = runtime.run_days(request.days)
-            for record in runtime.records:
+            summary = simulation.run_days(request.days)
+            for record in simulation.runtime.records:
                 if record.weather_changed:
                     print(
                         "weather_change="
@@ -47,6 +47,7 @@ class Simulator:
                 "world_summary="
                 f"ticks:{summary.ticks_completed},days:{summary.days_completed},"
                 f"weather_changes:{summary.weather_changes},"
+                f"world_events:{summary.world_events},"
                 f"end_reason:{summary.end_reason.value}"
             )
         print("Simulation finished.")

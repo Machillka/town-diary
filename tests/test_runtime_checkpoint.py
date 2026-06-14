@@ -36,6 +36,7 @@ def test_interrupted_restore_matches_continuous_objective_records() -> None:
     restored.run_ticks(20, end_when_complete=True)
 
     assert restored.records == continuous.records
+    assert restored.world_log.events == continuous.world_log.events
     assert restored.snapshot() == continuous.snapshot()
     assert restored.end_reason is RuntimeEndReason.COMPLETED
 
@@ -53,6 +54,7 @@ def test_replay_uses_original_seed_and_config_digest() -> None:
     assert replay.context.seed == 17
     assert replay.context.config_digest == runtime.context.config_digest
     assert replay.records == runtime.records
+    assert replay.world_log.events == runtime.world_log.events
     assert replay.snapshot() == runtime.snapshot()
 
 

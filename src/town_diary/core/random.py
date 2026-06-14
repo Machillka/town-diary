@@ -73,6 +73,13 @@ class DeterministicRandom:
             "increment": self._increment,
         }
 
+    def restore(self, snapshot: object) -> None:
+        """Restore this shared generator in place for transaction rollback."""
+        restored = self.from_snapshot(snapshot)
+        self.seed = restored.seed
+        self._state = restored._state
+        self._increment = restored._increment
+
     @classmethod
     def from_snapshot(cls, snapshot: object) -> "DeterministicRandom":
         if not isinstance(snapshot, dict):

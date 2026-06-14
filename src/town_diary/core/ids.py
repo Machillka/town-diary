@@ -52,6 +52,11 @@ class DeterministicIdGenerator:
         """Return JSON-compatible generator state."""
         return dict(sorted(self._counters.items()))
 
+    def restore(self, snapshot: Mapping[str, int]) -> None:
+        """Restore counters in place for transaction rollback."""
+        restored = self.from_snapshot(snapshot)
+        self._counters = restored._counters
+
     @classmethod
     def from_snapshot(cls, snapshot: Mapping[str, int]) -> "DeterministicIdGenerator":
         return cls(snapshot)

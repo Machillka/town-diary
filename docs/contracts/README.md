@@ -7,5 +7,7 @@
 - `data-contracts.md`：核心字段、ID、可见性和配置 schema 说明。
 - `world-foundation.md`：天气、地点、WorldState、快照和 checkpoint 契约。
 - `runtime-and-agents.md`：World Runtime、组合 checkpoint、重放和 Agent 主观状态契约。
+- `actions-and-candidates.md`：候选行为评分、ActionProposal、校验与执行边界。
+- `events-ticks-and-rule-decisions.md`：客观事件、两阶段 tick、冲突解决和规则决策契约。
 
 当实现与分析文档存在歧义时，先遵守本目录中的冻结契约；如需修改契约，必须在对应 `dev/*.dev.md` 中记录原因和影响。

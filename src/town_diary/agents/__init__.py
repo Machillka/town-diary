@@ -10,6 +10,14 @@ from town_diary.agents.model import (
     SubjectiveStateSnapshot,
     load_agents,
 )
+from town_diary.agents.candidates import (
+    CandidateAction,
+    CandidateGenerator,
+    NeedState,
+    ScoreContribution,
+    derive_needs,
+)
+from town_diary.agents.decision import DecisionAudit, RuleDecisionPolicy
 
 __all__ = [
     "Agent",
@@ -19,4 +27,11 @@ __all__ = [
     "RelationshipCognition",
     "SubjectiveStateSnapshot",
     "load_agents",
+    "CandidateAction",
+    "CandidateGenerator",
+    "NeedState",
+    "ScoreContribution",
+    "derive_needs",
+    "DecisionAudit",
+    "RuleDecisionPolicy",
 ]
